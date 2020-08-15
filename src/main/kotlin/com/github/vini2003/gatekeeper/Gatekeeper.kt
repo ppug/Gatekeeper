@@ -39,11 +39,11 @@ class Gatekeeper : ModInitializer {
 
 	@ExperimentalStdlibApi
 	override fun onInitialize() {
-		LOGGER.log(Level.INFO, "Initialization starting.")
+		LOGGER.info("Initialization starting.")
 
 		val path = "${FabricLoader.getInstance().configDir}/$MOD_ID/database.json"
 
-		LOGGER.log(Level.INFO, "Utilizing database path '$path'.")
+		LOGGER.info("Utilizing database path '$path'.")
 
 		ServerLifecycleEvents.SERVER_STARTED.register(ServerLifecycleEvents.ServerStarted {
 			val before = System.currentTimeMillis()
@@ -53,7 +53,7 @@ class Gatekeeper : ModInitializer {
 
 			val now = System.currentTimeMillis()
 
-			LOGGER.log(Level.INFO, "De-serialized database in ${now - before}ms.")
+			LOGGER.info("De-serialized database in ${now - before}ms.")
 		})
 
 		ServerLifecycleEvents.SERVER_STOPPED.register(ServerLifecycleEvents.ServerStopped {
@@ -63,13 +63,13 @@ class Gatekeeper : ModInitializer {
 
 			val now = System.currentTimeMillis()
 
-			LOGGER.log(Level.INFO, "De-serialized database in ${now - before}ms.")
+			LOGGER.info("De-serialized database in ${now - before}ms.")
 		})
 
 		Commands.initialize()
 
 		Callbacks.initialize()
 
-		LOGGER.log(Level.INFO, "Initialization complete.")
+		LOGGER.info("Initialization complete.")
 	}
 }

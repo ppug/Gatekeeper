@@ -27,20 +27,12 @@ class Database {
 	 * such is verified during de-serialization.
 	 */
 	fun verify(path: String) {
-		if (File(path).exists()) {
-			return
-		} else {
-			File(path).also { file ->
+		File(path).also { file ->
+			if (!file.exists()) {
 				file.parentFile.mkdirs()
 
-				file.outputStream().also { stream ->
-					stream.bufferedWriter().also { buffer ->
-						buffer.write("{\n}")
-
-						buffer.close()
-					}
-
-					stream.close()
+				file.bufferedWriter().use { buffer ->
+					buffer.write("{\n}")
 				}
 			}
 		}

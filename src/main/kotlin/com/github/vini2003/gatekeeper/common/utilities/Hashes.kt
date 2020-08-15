@@ -13,51 +13,49 @@ import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.SecureRandom
 
-class Hashes {
-	companion object {
-		/**
-		 * Hash a string with SHA-256 and a salt.
-		 */
-		fun hashAndSalt(string: String, salt: ByteArray): SaltedHashData {
-			MessageDigest.getInstance("SHA-256").also { digest ->
-				digest.update(salt)
+object Hashes {
+	/**
+	 * Hash a string with SHA-256 and a salt.
+	 */
+	fun hashAndSalt(string: String, salt: ByteArray): SaltedHashData {
+		MessageDigest.getInstance("SHA-256").also { digest ->
+			digest.update(salt)
 
-				return SaltedHashData(digest.digest(string.toByteArray(StandardCharsets.UTF_8)), salt)
-			}
-		}
-
-		/**
-		 * Hash a string with SHA-256 and a 32-byte salt.
-		 */
-		fun hashAndSalt(string: String): SaltedHashData {
-			ByteArray(32).also { salt ->
-				SecureRandom().also { random ->
-					random.nextBytes(salt)
-				}
-
-				return hashAndSalt(string, salt)
-			}
+			return SaltedHashData(digest.digest(string.toByteArray(StandardCharsets.UTF_8)), salt)
 		}
 	}
 
 	/**
-	 * Holds a salted SHA-256 hash, and the salt used in the procedure.
+	 * Hash a string with SHA-256 and a 32-byte salt.
 	 */
-	data class SaltedHashData(val hash: ByteArray, val salt: ByteArray) {
-		override fun equals(other: Any?): Boolean {
-			if (this === other) return true
-			if (other !is SaltedHashData) return false
+	fun hashAndSalt(string: String): SaltedHashData {
+		ByteArray(32).also { salt ->
+			SecureRandom().also { random ->
+				random.nextBytes(salt)
+			}
 
-			if (!hash.contentEquals(other.hash)) return false
-			if (!salt.contentEquals(other.salt)) return false
-
-			return true
+			return hashAndSalt(string, salt)
 		}
+	}
+}
 
-		override fun hashCode(): Int {
-			var result = hash.contentHashCode()
-			result = 31 * result + salt.contentHashCode()
-			return result
-		}
+/**
+ * Holds a salted SHA-256 hash, and the salt used in the procedure.
+ */
+data class SaltedHashData(val hash: ByteArray, val salt: ByteArray) {
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (other !is SaltedHashData) return false
+
+		if (!hash.contentEquals(other.hash)) return false
+		if (!salt.contentEquals(other.salt)) return false
+
+		return true
+	}
+
+	override fun hashCode(): Int {
+		var result = hash.contentHashCode()
+		result = 31 * result + salt.contentHashCode()
+		return result
 	}
 }

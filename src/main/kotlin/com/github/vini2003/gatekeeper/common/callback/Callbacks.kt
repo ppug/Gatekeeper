@@ -16,14 +16,12 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.ActionResult
 import org.apache.logging.log4j.Level
 
-class Callbacks {
-	companion object {
-		fun initialize() {
-			UseBlockCallback.EVENT.register(UseBlockCallback { player, _, _, _ ->
-				if (player is ServerPlayerEntity && !(player as PlayerLoginAccessor).gatekeeper_isLoggedIn()) ActionResult.FAIL else ActionResult.PASS
-			})
+object Callbacks {
+	fun initialize() {
+		UseBlockCallback.EVENT.register(UseBlockCallback { player, _, _, _ ->
+			if (player is ServerPlayerEntity && !(player as PlayerLoginAccessor).gatekeeper_isLoggedIn()) ActionResult.FAIL else ActionResult.PASS
+		})
 
-			Gatekeeper.LOGGER.log(Level.INFO, "Callbacks initialized.")
-		}
+		Gatekeeper.LOGGER.info("Callbacks initialized.")
 	}
 }
