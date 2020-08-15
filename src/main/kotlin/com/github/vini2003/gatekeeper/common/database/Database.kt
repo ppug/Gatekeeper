@@ -43,14 +43,12 @@ class Database {
 	 */
 	@ExperimentalStdlibApi
 	fun deserialize(path: String) {
-		File(path).inputStream().also { stream ->
+		File(path).inputStream().use { stream ->
 			(Parser.default().parse(stream) as JsonObject).also { data ->
 				data.forEach { uuid, json ->
 					users[UUID.fromString(uuid)] = User().also { it.fromJson(json as JsonObject) }
 				}
 			}
-
-			stream.close()
 		}
 	}
 
@@ -60,10 +58,8 @@ class Database {
 	@ExperimentalStdlibApi
 	fun serialize(path: String) {
 		if (users.isEmpty()) {
-			File(path).bufferedWriter().also { writer ->
+			File(path).bufferedWriter().use { writer ->
 				writer.write("{\n}")
-
-				writer.close()
 			}
 		}
 		JsonObject().also { data ->
@@ -71,14 +67,8 @@ class Database {
 				data[uuid.toString()] = user.toJson()
 			}
 
-			File(path).outputStream().also { stream ->
-				stream.bufferedWriter().also { writer ->
-					writer.write(data.toJsonString(true))
-
-					writer.close()
-				}
-
-				stream.close()
+			File(path).bufferedWriter().use {
+				it.write(data.toJsonString(true))
 			}
 		}
 	}
